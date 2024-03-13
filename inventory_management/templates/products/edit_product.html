@@ -1,0 +1,23 @@
+{% extends "inventory_management/base_site.html" %}
+
+{% block document-title %}Products{% endblock %}
+{% block page-title %}Products{% endblock %}
+
+{% block main %}
+    <section class="main-section">
+        <form method="post" action="{% url 'edit_product' product_id=product.product_id %}">
+            {% csrf_token %}
+
+
+            {% for field in form %}
+                <div class="did-floating-label-content">
+                    {{ field }}
+                    <label class="did-floating-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                </div>
+            {% endfor %}
+
+            <input class="add" type="submit" value="Save">
+        </form>
+    </section>
+{% endblock %}
+

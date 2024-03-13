@@ -1,0 +1,57 @@
+{% extends "inventory_management/base_site.html" %}
+
+{% block document-title %}Products{% endblock %}
+{% block page-title %}Products{% endblock %}
+
+{% block main %}
+    <section class="main-section">
+        <form method="post" action="{% url 'products' %}">
+            {% csrf_token %}
+
+
+            {% for field in form %}
+                <div class="did-floating-label-content">
+                    {{ field }}
+                    <label class="did-floating-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                </div>
+            {% endfor %}
+
+            <input class="add" type="submit" value="Add">
+        </form>
+    </section>
+
+    {% for message in messages %}
+        <p class="error-p">
+            <strong>{{ message }}</strong>
+        </p>
+    {% endfor %}
+
+
+    <hr>
+
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Product ID
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for product in products_list %}
+            <tr>
+                <td>
+                    <a href="{% url "edit_product" product_id=product.product_id %}">
+                        {{ product.product_id }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+{% endblock %}
+

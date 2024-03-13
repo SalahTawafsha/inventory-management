@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productmovement',
             name='from_location',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='from_location', to='inventory_management.location'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='from_location', to='inventory_management.locations'),
         ),
         migrations.AlterField(
             model_name='productmovement',
             name='to_location',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='to_location', to='inventory_management.location'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='to_location', to='inventory_management.locations'),
         ),
     ]
