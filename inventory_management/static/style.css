@@ -296,7 +296,7 @@
 .did-floating-label-content {
     display: inline-block;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .did-floating-label {
@@ -342,23 +342,64 @@
 }
 
 
-.add {
+.button {
     background-color: #BDC9EB;
     padding: 5px 10px;
     border: 1px solid #3D85D8;
     border-radius: 10px;
 }
 
-.add:hover {
+.button:hover {
     background-color: #a0aed5;
     cursor: pointer;
 }
 
-.error-p{
-    margin: 0 0 10px 0 ;
+.error-p {
+    margin: 0 0 10px 0;
     text-align: center;
 }
 
 .error-p strong {
     color: red;
+}
+
+.elements-grid {
+    width: 75%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    flex-wrap: wrap;
+}
+
+.element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: black;
+    width: 200px;
+    text-align: center;
+    background-color: #BDC9EB;
+    border-radius: 20px;
+    padding: 15px 15px;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.element i{
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.element:hover {
+    background-color: #a0aed5;
+    cursor: pointer;
+}
+
+.element:visited {
+    color: black;
+}
+
+.elements-title {
+    text-align: center;
+    margin-top: 10px;
 }

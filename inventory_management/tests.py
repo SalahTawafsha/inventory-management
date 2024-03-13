@@ -24,13 +24,6 @@ class LocationModelTests(TestCase):
         self.assertRaises(IntegrityError, lambda: Location.objects.create(location_id="Ramallah"))
 
 
-def createProductAndLocations(product_id: str, first_location_id: str, second_location_id: str):
-    product, first_location = createProductAndLocation(product_id, first_location_id)
-    second_location = Location.objects.create(location_id=second_location_id)
-
-    return product, first_location, second_location
-
-
 class ProductMovementModelTests(TestCase):
     """ Testing for ProductMovement model. """
 
@@ -78,3 +71,10 @@ def createProductAndLocation(product_id: str, location_id: str):
     location = Location.objects.create(location_id=location_id)
 
     return product, location
+
+
+def createProductAndLocations(product_id: str, first_location_id: str, second_location_id: str):
+    product, first_location = createProductAndLocation(product_id, first_location_id)
+    second_location = Location.objects.create(location_id=second_location_id)
+
+    return product, first_location, second_location

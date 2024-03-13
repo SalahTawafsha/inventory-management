@@ -72,6 +72,16 @@
             closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");//replacing the iocns class
         }
     }
+
+    function showOrRemoveForm(form_id) {
+        let form = document.getElementById(form_id.trim());
+        const input = form.querySelector(".did-floating-label-content")
+
+        if (form.style.display === "none")
+            form.style.display = "block";
+        else if (!input.matches(':hover'))
+            form.style.display = "none";
+    }
 </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 {% extends "inventory_management/base_site.html" %}
+{% load static %}
 
 {% block document-title %}Locations{% endblock %}
 {% block page-title %}Locations{% endblock %}
@@ -15,7 +16,7 @@
                 </div>
             {% endfor %}
 
-            <input class="add" type="submit" value="Add">
+            <input class="button" type="submit" value="Add">
         </form>
 
     </section>
@@ -29,27 +30,32 @@
 
     <hr>
 
-    <table>
-        <thead>
-        <tr>
-            <th>
-                Location ID
-            </th>
-        </tr>
-        </thead>
+    <section>
+        <h2 class="elements-title">Locations</h2>
 
-        <tbody>
-        {% for location in locations_list %}
-            <tr>
-                <td>
+        <section class="elements-grid">
+            {% for location in locations_list %}
+                <a class="element" onclick="showOrRemoveForm('{{ location.location_id }}')">
+                    <i class='bx bx-location-plus'></i>
                     {{ location.location_id }}
-                </td>
-            </tr>
-        {% endfor %}
 
-        </tbody>
+                    <form id="{{ location.location_id }}" method="post"
+                          action="{% url 'edit_location' location_id=location.location_id %}"
+                          style="display: none">
+                        {% csrf_token %}
+                        <div class="did-floating-label-content">
+                            <input class="did-floating-input" type="text" name="location_id"
+                                   value="{{ location.location_id }}" style="font-size: 14px" required>
+                        </div>
 
-    </table>
+                        <input type="submit" class="button" value="Save">
+                    </form>
+
+                </a>
+            {% endfor %}
+
+        </section>
+    </section>
 
 {% endblock %}
 

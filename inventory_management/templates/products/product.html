@@ -16,7 +16,7 @@
                 </div>
             {% endfor %}
 
-            <input class="add" type="submit" value="Add">
+            <input class="button" type="submit" value="Add">
         </form>
     </section>
 
@@ -29,29 +29,33 @@
 
     <hr>
 
-    <table>
-        <thead>
-        <tr>
-            <th>
-                Product ID
-            </th>
-        </tr>
-        </thead>
+    <section>
+        <h2 class="elements-title">Products</h2>
 
-        <tbody>
-        {% for product in products_list %}
-            <tr>
-                <td>
-                    <a href="{% url "edit_product" product_id=product.product_id %}">
-                        {{ product.product_id }}
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
+        <section class="elements-grid">
+            {% for product in products_list %}
+                <a class="element" onclick="showOrRemoveForm('{{ product.product_id }}')">
+                    <i class='bx bx-box'></i>
+                    {{ product.product_id }}
+                    <form id="{{ product.product_id }}" method="post"
+                          action="{% url 'edit_product' product_id=product.product_id %}"
+                          style="display: none">
+                        {% csrf_token %}
+                        <div class="did-floating-label-content">
+                            <input class="did-floating-input" type="text" name="product_id"
+                                   value="{{ product.product_id }}" style="font-size: 14px" required>
+                        </div>
 
-        </tbody>
+                        <input type="submit" class="button" value="Save">
+                    </form>
+                </a>
 
-    </table>
+
+            {% endfor %}
+
+        </section>
+    </section>
+
 
 {% endblock %}
 
