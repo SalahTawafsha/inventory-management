@@ -1,15 +1,30 @@
 from django.contrib import messages
 from django.db import IntegrityError
+from django.db.models import Case, When, Value, QuerySet, Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.db import connection
 
-from inventory_management.forms import ProductForm, LocationForm
+from inventory_management.forms import ProductForm, LocationForm, ProductMovementForm
 from inventory_management.models import Product, Location, ProductMovement
 
 
 # Create your views here.
+def get_location(location_id):
+    if location_id == "":
+        return None
+
+    return get_object_or_404(Location, location_id=location_id)
+
+
 def index(request):
+    # cursor = connection.cursor()
+    # cursor.execute(
+    #                'SELECT sum(quantity), product_id'
+    #                ' FROM  inventory_management_productmovement'
+    #                ' group BY product_id_id, from_location_id, to_location_id')
+    # results = cursor.fetchall()
     return render(request, "dashboard/index.html")
 
 
@@ -26,7 +41,7 @@ def products(request):
             messages.error(request,
                            "Invalid Form")
 
-    products_list = Product.objects.values()
+    products_list = Product.objects.all().order_by("product_id")
     return render(request, "products/product.html", {'form': ProductForm(), "products_list": products_list})
 
 
@@ -43,7 +58,7 @@ def locations(request):
             messages.error(request,
                            "Invalid Form")
 
-    locations_list = Location.objects.values()
+    locations_list = Location.objects.all().order_by("location_id")
     return render(request, "locations/location.html", {'form': LocationForm(), "locations_list": locations_list})
 
 
@@ -69,10 +84,14 @@ def edit_location(request, location_id: str):
         if request.POST["location_id"] != location_id:
             try:
                 new_location = Location.objects.create(location_id=request.POST["location_id"])
-                ProductMovement.objects \
-                    .filter(to_location=location_id).update(to_location=new_location.location_id)
-                ProductMovement.objects \
-                    .filter(from_location=location_id).update(from_location=new_location.location_id)
+                ProductMovement.objects.update(
+                    from_location_id=Case(
+                        When(from_location_id=location_id, then=Value(new_location.location_id)),
+                    ),
+                    to_location_id=Case(
+                        When(to_location_id=location_id, then=Value(new_location.location_id)),
+                    ),
+                )
 
                 location.delete()
 
@@ -81,3 +100,21 @@ def edit_location(request, location_id: str):
                                "This Location is already exist")
 
     return HttpResponseRedirect(reverse("locations"))
+
+
+def product_movement(request):
+    if request.method == "POST":
+        form = ProductMovementForm(request.POST)
+        if form.is_valid():
+            product = get_object_or_404(Product, product_id=form.cleaned_data["product_id"])
+            from_location = get_location(form.cleaned_data["from_location"])
+            to_location = get_location(form.cleaned_data["to_location"])
+
+            ProductMovement.objects.create(product_id=product,
+                                           from_location=from_location,
+                                           to_location=to_location,
+                                           quantity=form.cleaned_data["quantity"])
+    form = ProductMovementForm()
+    product_movements = ProductMovement.objects.all()
+    return render(request, "product_movement/product_movement.html",
+                  {"form": form, "product_movements": product_movements})

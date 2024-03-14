@@ -6,7 +6,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="../../inventory_management/static/style.css"/>
     <meta charset="UTF-8">
-    <title> Responsive Sidebar Menu | CodingLab </title>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
     <!-- Boxicons CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
@@ -42,6 +41,13 @@
                 <span class="links_name">Location</span>
             </a>
             <span class="tooltip">Location</span>
+        </li>
+        <li>
+            <a href="{% url 'product_movement' %}">
+                <i class='bx bx-move'></i>
+                <span class="links_name">Product Movement</span>
+            </a>
+            <span class="tooltip">Product Movement</span>
         </li>
     </ul>
 </div>
