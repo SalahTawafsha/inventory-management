@@ -104,10 +104,14 @@ def product_movement(request):
             from_location = get_location(form.cleaned_data["from_location"])
             to_location = get_location(form.cleaned_data["to_location"])
 
-            ProductMovement.objects.create(product_id=product,
-                                           from_location=from_location,
-                                           to_location=to_location,
-                                           quantity=form.cleaned_data["quantity"])
+            try:
+                ProductMovement.objects.create(product_id=product,
+                                               from_location=from_location,
+                                               to_location=to_location,
+                                               quantity=form.cleaned_data["quantity"])
+            except IntegrityError as e:
+                messages.error(request, str(e))
+
     form = ProductMovementForm()
     product_movements = ProductMovement.objects.all()
     return render(request, "product_movement/product_movement.html",

@@ -21,7 +21,11 @@
                 {% for product_balance in products_balance %}
                     <tr>
                         {% for field in product_balance %}
-                            <td>{{ field }}</td>
+                            {% if field|stringformat:"s" == "None" %}
+                                <td>SOLD ITEMS</td>
+                            {% else %}
+                                <td>{{ field }}</td>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                 {% endfor %}

@@ -39,6 +39,7 @@ class ProductMovementModelTests(TestCase):
         """ test create with blank to_location."""
         product, location = createProductAndLocation("Apple", "Ramallah")
 
+        ProductMovement.objects.create(product_id=product, to_location=location, quantity=12)
         product_movement = ProductMovement.objects.create(product_id=product, from_location=location, quantity=12)
 
         self.assertAllFields(product_movement, product, location, None, 12)
@@ -46,6 +47,9 @@ class ProductMovementModelTests(TestCase):
     def test_fill_both_locations(self):
         product, first_location, second_location \
             = createProductAndLocations("Apple", "Ramallah", "Nablus")
+
+        ProductMovement.objects.create(product_id=product,
+                                       to_location=first_location, quantity=12)
 
         product_movement = ProductMovement.objects.create(product_id=product, from_location=first_location,
                                                           to_location=second_location, quantity=12)
@@ -56,8 +60,22 @@ class ProductMovementModelTests(TestCase):
         """ test create with both blank locations."""
         product = Product.objects.create(product_id="Apple")
 
-        self.assertRaisesRegex(Exception, "Both 'from location' and 'to location' can't be blank.",
+        self.assertRaisesRegex(IntegrityError, "Both 'from location' and 'to location' can't be blank.",
                                lambda: ProductMovement.objects.create(product_id=product, quantity=12), )
+
+    def test_move_quantity_more_than_exist(self):
+        """ test create with not enough quantity."""
+
+        product, first_location, second_location \
+            = createProductAndLocations("Apple", "Ramallah", "Nablus")
+
+        ProductMovement.objects.create(product_id=product, from_location=None, to_location=first_location, quantity=5)
+
+        self.assertRaisesRegex(IntegrityError,
+                               "Product balance in Ramallah is 5 so, can't move 6 from it",
+                               lambda: ProductMovement.objects.create(product_id=product, from_location=first_location,
+                                                                      to_location=second_location,
+                                                                      quantity=6), )
 
     def assertAllFields(self, product_movement, product, from_location, to_location, quantity):
         self.assertEquals(product_movement.product_id, product)

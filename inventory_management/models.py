@@ -1,4 +1,4 @@
-from django.db import models, connection
+from django.db import models, connection, IntegrityError
 from django.utils import timezone
 
 GET_PRODUCTS_BALANCE_QUERY = """
@@ -18,6 +18,13 @@ FROM (SELECT product_id_id,
                     GROUP BY product_id_id, from_location_id) AS from_location_table
                    ON to_location_table.to_location_id = from_location_table.from_location_id AND
                       to_location_table.product_id_id = from_location_table.product_id_id;
+"""
+
+GET_PRODUCT_BALANCE_IN_LOCATION_QUERY = """
+SELECT
+    COALESCE(SUM(CASE WHEN to_location_id = '{location_id}' THEN quantity ELSE -quantity END), 0)
+from inventory_management_productmovement
+where product_id_id = '{product_id}' and (from_location_id = '{location_id}' or to_location_id = '{location_id}');
 """
 
 
@@ -65,7 +72,16 @@ class ProductMovement(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.from_location and not self.to_location:
-            raise Exception("Both 'from location' and 'to location' can't be blank.")
+            raise IntegrityError("Both 'from location' and 'to location' can't be blank.")
+
+        if self.from_location:
+            balance_of_product_in_location = (
+                ProductMovement.get_balance_of_product_in_location(str(self.product_id),
+                                                                   str(self.from_location)))
+            if balance_of_product_in_location < int(self.quantity):
+                raise IntegrityError(
+                    f"Product balance in {self.from_location} is {balance_of_product_in_location} "
+                    f"so, can't move {self.quantity} from it")
 
         super().save(*args, **kwargs)
 
@@ -76,3 +92,14 @@ class ProductMovement(models.Model):
         results = cursor.fetchall()
 
         return results
+
+    @staticmethod
+    def get_balance_of_product_in_location(product_id: str, location_id: str):
+        if not isinstance(product_id, str) or not isinstance(location_id, str):
+            raise TypeError()
+
+        cursor = connection.cursor()
+        cursor.execute(GET_PRODUCT_BALANCE_IN_LOCATION_QUERY.format(location_id=location_id, product_id=product_id))
+        results = cursor.fetchall()
+
+        return int(results[0][0])

@@ -21,6 +21,8 @@
 
                 if(from_location.value==='' && to_location.value==='')
                     window.alert('You must select one of from location or to location');
+                else if(from_location.value===to_location.value)
+                    window.alert('From location and to location must be different');
                 else
                     document.getElementById('add_product_movement_form').submit();
             }
@@ -42,7 +44,7 @@
     <section>
         <h2 class="elements-title">Product Movements</h2>
 
-        <table class="my-table" >
+        <table class="my-table">
             <thead>
             <tr>
                 <th>Product ID</th>
