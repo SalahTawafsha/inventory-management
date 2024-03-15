@@ -1,10 +1,9 @@
 from django.contrib import messages
 from django.db import IntegrityError
-from django.db.models import Case, When, Value, QuerySet, Count
+from django.db.models import Case, When, Value
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.db import connection
 
 from inventory_management.forms import ProductForm, LocationForm, ProductMovementForm
 from inventory_management.models import Product, Location, ProductMovement
@@ -19,13 +18,8 @@ def get_location(location_id):
 
 
 def index(request):
-    # cursor = connection.cursor()
-    # cursor.execute(
-    #                'SELECT sum(quantity), product_id'
-    #                ' FROM  inventory_management_productmovement'
-    #                ' group BY product_id_id, from_location_id, to_location_id')
-    # results = cursor.fetchall()
-    return render(request, "dashboard/index.html")
+    products_balance = ProductMovement.get_product_balance_in_locations()
+    return render(request, "dashboard/index.html", {"products_balance": products_balance})
 
 
 def products(request):

@@ -5,7 +5,7 @@
 
 {% block main %}
     <section class="main-section">
-        <form action="{% url "index" %}" method="post" id="add_product_movement_form">
+        <form action="{% url "product_movement" %}" method="post" id="add_product_movement_form">
             {% csrf_token %}
 
             {% for field in form %}
@@ -15,14 +15,13 @@
                 </div>
             {% endfor %}
 
-            <button class="button" onclick="function validate_locations() {
+            <button type="button" class="button" onclick="function validate_locations() {
                 let from_location = document.getElementById('form_location');
                 let to_location = document.getElementById('to_location');
-                let form = document.getElementById('add_product_movement_form');
 
                 if(from_location.value==='' && to_location.value==='')
                     window.alert('You must select one of from location or to location');
-                else if(form.validate())
+                else
                     document.getElementById('add_product_movement_form').submit();
             }
             validate_locations()">Add

@@ -4,3 +4,30 @@
 {% block page-title %}Dashboard{% endblock %}
 
 
+{% block main %}
+    <section class="main-section">
+        <section>
+            <h2 class="elements-title">Product Movements</h2>
+
+            <table class="my-table">
+                <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Location</th>
+                    <th>Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product_balance in products_balance %}
+                    <tr>
+                        {% for field in product_balance %}
+                            <td>{{ field }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </section>
+
+{% endblock %}

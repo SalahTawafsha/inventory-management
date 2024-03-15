@@ -1,5 +1,24 @@
-from django.db import models
+from django.db import models, connection
 from django.utils import timezone
+
+GET_PRODUCTS_BALANCE_QUERY = """
+SELECT to_location_table.product_id_id,
+       to_location_table.to_location_id,
+       (to_location_table.sum_quantity - COALESCE(from_location_table.sum_quantity, 0)) AS net_quantity
+FROM (SELECT product_id_id,
+             to_location_id,
+             SUM(quantity) AS sum_quantity
+      FROM inventory_management_productmovement
+      GROUP BY product_id_id, to_location_id) AS to_location_table
+         LEFT JOIN (SELECT product_id_id,
+                           from_location_id,
+                           SUM(quantity) AS sum_quantity
+                    FROM inventory_management_productmovement
+                    WHERE from_location_id IS NOT NULL
+                    GROUP BY product_id_id, from_location_id) AS from_location_table
+                   ON to_location_table.to_location_id = from_location_table.from_location_id AND
+                      to_location_table.product_id_id = from_location_table.product_id_id;
+"""
 
 
 # Create your models here.
@@ -49,3 +68,11 @@ class ProductMovement(models.Model):
             raise Exception("Both 'from location' and 'to location' can't be blank.")
 
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def get_product_balance_in_locations():
+        cursor = connection.cursor()
+        cursor.execute(GET_PRODUCTS_BALANCE_QUERY)
+        results = cursor.fetchall()
+
+        return results
