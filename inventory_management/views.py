@@ -96,23 +96,47 @@ def edit_location(request, location_id: str):
     return HttpResponseRedirect(reverse("locations"))
 
 
+def addProductMovement(request, form):
+    product = get_object_or_404(Product, product_id=form.cleaned_data["product_id"])
+    from_location = get_location(form.cleaned_data["from_location"])
+    to_location = get_location(form.cleaned_data["to_location"])
+
+    ProductMovement.objects.create(product_id=product,
+                                   from_location=from_location,
+                                   to_location=to_location,
+                                   quantity=form.cleaned_data["quantity"])
+
+
 def product_movement(request):
     if request.method == "POST":
         form = ProductMovementForm(request.POST)
         if form.is_valid():
-            product = get_object_or_404(Product, product_id=form.cleaned_data["product_id"])
-            from_location = get_location(form.cleaned_data["from_location"])
-            to_location = get_location(form.cleaned_data["to_location"])
-
             try:
-                ProductMovement.objects.create(product_id=product,
-                                               from_location=from_location,
-                                               to_location=to_location,
-                                               quantity=form.cleaned_data["quantity"])
+                addProductMovement(request, form)
             except IntegrityError as e:
                 messages.error(request, str(e))
+            finally:
+                # this redirect is to avoid render with POST method
+                # since if render with POST will make problem that will add again if refresh page
+                return HttpResponseRedirect(reverse("product_movement"))
+        else:
+            messages.error(request,
+                           form.errors)
 
     form = ProductMovementForm()
-    product_movements = ProductMovement.objects.all()
+    product_movements = ProductMovement.objects.all().order_by("product_id", "from_location", "to_location")
     return render(request, "product_movement/product_movement.html",
                   {"form": form, "product_movements": product_movements})
+
+
+def edit_product_movement(request, product_movement_id: str):
+    movement = get_object_or_404(ProductMovement, movement_id=product_movement_id)
+    if request.method == "POST":
+        try:
+            movement.quantity = request.POST["quantity"]
+            movement.save()
+
+        except IntegrityError as e:
+            messages.error(request, str(e))
+
+    return HttpResponseRedirect(reverse("product_movement"))

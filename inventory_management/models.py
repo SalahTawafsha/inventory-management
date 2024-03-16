@@ -24,7 +24,7 @@ GET_PRODUCT_BALANCE_IN_LOCATION_QUERY = """
 SELECT
     COALESCE(SUM(CASE WHEN to_location_id = '{location_id}' THEN quantity ELSE -quantity END), 0)
 from inventory_management_productmovement
-where product_id_id = '{product_id}' and (from_location_id = '{location_id}' or to_location_id = '{location_id}');
+where movement_id != '{movement_id}' and product_id_id = '{product_id}' and (from_location_id = '{location_id}' or to_location_id = '{location_id}');
 """
 
 
@@ -77,7 +77,8 @@ class ProductMovement(models.Model):
         if self.from_location:
             balance_of_product_in_location = (
                 ProductMovement.get_balance_of_product_in_location(str(self.product_id),
-                                                                   str(self.from_location)))
+                                                                   str(self.from_location),
+                                                                   str(self.movement_id)))
             if balance_of_product_in_location < int(self.quantity):
                 raise IntegrityError(
                     f"Product balance in {self.from_location} is {balance_of_product_in_location} "
@@ -94,12 +95,13 @@ class ProductMovement(models.Model):
         return results
 
     @staticmethod
-    def get_balance_of_product_in_location(product_id: str, location_id: str):
-        if not isinstance(product_id, str) or not isinstance(location_id, str):
+    def get_balance_of_product_in_location(product_id: str, location_id: str, movement_id: str):
+        if not isinstance(product_id, str) or not isinstance(location_id, str) or not isinstance(movement_id, str):
             raise TypeError()
 
         cursor = connection.cursor()
-        cursor.execute(GET_PRODUCT_BALANCE_IN_LOCATION_QUERY.format(location_id=location_id, product_id=product_id))
+        cursor.execute(GET_PRODUCT_BALANCE_IN_LOCATION_QUERY.format(location_id=location_id, product_id=product_id,
+                                                                    movement_id=movement_id))
         results = cursor.fetchall()
 
         return int(results[0][0])

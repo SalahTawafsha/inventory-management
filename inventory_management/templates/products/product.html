@@ -36,7 +36,10 @@
             {% for product in products_list %}
                 <a class="element" onclick="showOrRemoveForm('{{ product.product_id }}')">
                     <i class='bx bx-box'></i>
-                    {{ product.product_id }}
+                    <p id="{{ product.product_id }}-label"
+                       style="display: block">{{ product.product_id }}</p>
+
+
                     <form id="{{ product.product_id }}" method="post"
                           action="{% url 'edit_product' product_id=product.product_id %}"
                           style="display: none">

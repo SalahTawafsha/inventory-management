@@ -8,4 +8,5 @@ urlpatterns = [
     path('locations/', views.locations, name="locations"),
     path('locations/<str:location_id>', views.edit_location, name="edit_location"),
     path('product-movement/', views.product_movement, name="product_movement"),
+    path('product-movement/<str:product_movement_id>', views.edit_product_movement, name="edit_product_movement"),
 ]

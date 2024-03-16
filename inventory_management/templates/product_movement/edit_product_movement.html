@@ -1,0 +1,36 @@
+{% extends "inventory_management/base_site.html" %}
+
+{% block document-title %}Edit Product Movement{% endblock %}
+{% block page-title %}Edit Product Movement{% endblock %}
+
+{% block main %}
+    <section class="main-section">
+        <form action="{% url "edit_product_movement"  product_movement_id %}" method="post"
+              id="add_product_movement_form">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="did-floating-label-content" style="display: block">
+                    {{ field }}
+                    <label class="did-floating-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                </div>
+            {% endfor %}
+
+            <button type="button" class="button" style="margin: auto;display: block" onclick="function validate_locations() {
+                let from_location = document.getElementById('form_location');
+                let to_location = document.getElementById('to_location');
+
+                if(from_location.value==='' && to_location.value==='')
+                    window.alert('You must select one of from location or to location');
+                else if(from_location.value===to_location.value)
+                    window.alert('From location and to location must be different');
+                else
+                    document.getElementById('add_product_movement_form').submit();
+            }
+            validate_locations()">Save
+            </button>
+        </form>
+
+    </section>
+
+{% endblock %}

@@ -55,12 +55,28 @@
             </thead>
             <tbody>
             {% for product_movement in product_movements %}
-                <tr>
+                <tr onclick="showOrRemoveForm('{{ product_movement.movement_id }}' )">
                     <td>{{ product_movement.product_id }}</td>
-                    <td>{{ product_movement.from_location }}
-                    </td>
+                    <td>{{ product_movement.from_location }}</td>
                     <td>{{ product_movement.to_location }}</td>
-                    <td>{{ product_movement.quantity }}</td>
+                    <td>
+                        <form id="{{ product_movement.movement_id }}" method="post"
+                              action="{% url 'edit_product_movement' product_movement.movement_id %}"
+                              style="display: none">
+                            {% csrf_token %}
+                            <div class="did-floating-label-content">
+                                <input class="did-floating-input" type="text" name="quantity"
+                                       value="{{ product_movement.quantity }}">
+                            </div>
+                            <input class="did-floating-input" type="hidden" name="product_movement_id"
+                                   value="{{ product_movement.movement_id }}" style="font-size: 14px">
+
+                            <input type="submit" class="button" value="Save">
+                        </form>
+
+                        <p id="{{ product_movement.movement_id }}-label"
+                               style="display: block">{{ product_movement.quantity }}</p>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

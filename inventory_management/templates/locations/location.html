@@ -37,7 +37,9 @@
             {% for location in locations_list %}
                 <a class="element" onclick="showOrRemoveForm('{{ location.location_id }}')">
                     <i class='bx bx-location-plus'></i>
-                    {{ location.location_id }}
+                    <p id="{{ location.location_id }}-label"
+                       style="display: block">{{ location.location_id }}</p>
+
 
                     <form id="{{ location.location_id }}" method="post"
                           action="{% url 'edit_location' location_id=location.location_id %}"
