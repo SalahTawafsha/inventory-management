@@ -18,16 +18,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for product_balance in products_balance %}
-                    <tr>
-                        {% for field in product_balance %}
-                            {% if field|stringformat:"s" == "None" %}
+                {% for product, product_record in products_balance.items %}
+                    {% for location, value in product_record.items %}
+                        <tr>
+                            <td>{{ product }}</td>
+                            {% if location == "None" %}
                                 <td>SOLD ITEMS</td>
                             {% else %}
-                                <td>{{ field }}</td>
+                                <td>{{ location }}</td>
                             {% endif %}
-                        {% endfor %}
-                    </tr>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
                 </tbody>
 
