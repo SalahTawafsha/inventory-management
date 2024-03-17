@@ -6,7 +6,7 @@
 
 GIF images to show hovers and clicks on the app
 <br>
-<strong>Note that images has problem in quality, this happened when convert video to gif</strong>
+<strong>Note that images has not in high resolution, please click on image when you want to show it </strong>
 ### 1. Dashboard that has reports of the product balance in each location
 
 <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/93351227/313477888-dc2bf2b9-0fd9-49b9-9921-a4d53f57c580.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240317%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240317T140344Z&X-Amz-Expires=300&X-Amz-Signature=7feab31771a8420938813c31ce8a27f80c37e635b7a52c935a03a533da027ac5&X-Amz-SignedHeaders=host&actor_id=93351227&key_id=0&repo_id=770633186" alt="Dashboard" width="100%">
