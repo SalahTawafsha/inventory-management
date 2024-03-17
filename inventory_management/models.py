@@ -5,6 +5,7 @@ from django.utils import timezone
 # Create your models here.
 
 class Product(models.Model):
+    """ Product model as provided in the test """
     product_id = models.CharField("Product", primary_key=True, max_length=50)
 
     @staticmethod
@@ -22,6 +23,8 @@ class Product(models.Model):
 
 
 class Location(models.Model):
+    """ Location model as provided in the test """
+
     location_id = models.CharField("Location", primary_key=True, max_length=50)
 
     @staticmethod
@@ -41,6 +44,8 @@ class Location(models.Model):
 
 
 class ProductMovement(models.Model):
+    """ ProductMovement model as provided in the test """
+
     movement_id = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField("Time of Move", default=timezone.now)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
