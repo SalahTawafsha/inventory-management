@@ -14,8 +14,7 @@ Videos to show hovers and clicks on the app
 ### 1. Dashboard that has reports of the product balance in each location
 
 #### Table that shows products and balance in each location
-
-https://github.com/SalahTawafsha/inventory-management/assets/93351227/e87ecb6b-11ae-49d8-922f-8d1e8a832067
+https://github.com/SalahTawafsha/inventory-management/assets/93351227/599173f8-1d66-4eab-b6eb-32a37f17dec9
 
 ### 2. Sidebar that is navigation of the app
 
@@ -38,6 +37,7 @@ https://github.com/SalahTawafsha/inventory-management/assets/93351227/1eccd4a9-c
 ### 5. Add, show and update Product Movements
 
 #### Add Product Movement form and table of movements, click on any row to edit quantity
+#### Note that the results in dashboard (above) is after do the move in video
+https://github.com/SalahTawafsha/inventory-management/assets/93351227/022f2486-aed8-4b05-9900-cd8567ae35c7
 
-https://github.com/SalahTawafsha/inventory-management/assets/93351227/5b14683c-8d5c-48b0-8233-724f121a12b3
 
