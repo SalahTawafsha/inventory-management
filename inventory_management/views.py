@@ -25,6 +25,16 @@ def index(request):
     return render(request, "dashboard/index.html", {"products_balance": products_balance})
 
 
+def update(request):
+    products_balance = ProductMovement.get_quantity_of_all_locations_products_counts()
+    products_list = Product.objects.all().order_by("product_id")
+    locations_list = Location.objects.all().order_by("location_id")
+
+    return render(request, "dashboard/update.html",
+                  {"products_balance": products_balance, "products_list": products_list,
+                   "locations_list": locations_list})
+
+
 def products(request):
     """ products view that has form of add product """
 

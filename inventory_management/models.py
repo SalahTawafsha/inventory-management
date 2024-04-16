@@ -88,7 +88,7 @@ class ProductMovement(models.Model):
         results = {}
 
         # loop on all movements with -quantity when move from location and with +quantity when move to location
-        for product_movement in ProductMovement.objects.all():
+        for product_movement in ProductMovement.objects.all().order_by("product_id"):
             product_id = product_movement.product_id.product_id
 
             from_location, to_location = get_from_and_to_locations(product_movement)
@@ -98,6 +98,30 @@ class ProductMovement(models.Model):
                 add_location_quantity(results, product_id, from_location, -quantity)
 
             add_location_quantity(results, product_id, to_location, quantity)
+
+        return results
+
+    @staticmethod
+    def get_quantity_of_all_locations_products_counts() -> dict:
+        """ method that returns dict of locations with balance of each product """
+
+        # dictionary that will have format:
+        # {'location': {'product_1': count_product_1, 'product_2': count_product_2}}
+        results = {}
+
+        products = Product.objects.all().order_by("product_id")
+
+        # loop on all movements with -quantity when move from location and with +quantity when move to location
+        for product_movement in ProductMovement.objects.all():
+            product_id = product_movement.product_id.product_id
+
+            from_location, to_location = get_from_and_to_locations(product_movement)
+            quantity = product_movement.quantity
+
+            if from_location is not None:
+                add_product_quantity(results, product_id, from_location, -quantity, products)
+
+            add_product_quantity(results, product_id, to_location, quantity, products)
 
         return results
 
@@ -140,6 +164,27 @@ def add_location_quantity(results, product_id, location, quantity):
         results.update({product_id: {location: quantity}})
 
 
+def add_product_quantity(results, product_id, location, quantity, products):
+    """ method that add quantity of product to count of quantity in a location """
+
+    if location is None:
+        location = "Sold"
+
+    if location in results.keys():
+        if product_id in results[location].keys():
+            results[location][product_id] = results[location][product_id] + quantity
+        else:
+            results[location][product_id] = quantity
+    else:
+        results.update({location: {}})
+
+        for product in products:
+            if product.product_id == product_id:
+                results[location][product.product_id] = quantity
+            else:
+                results[location][product.product_id] = 0
+
+
 def get_from_and_to_locations(product_movement):
     """ get location_id for 'from_location' and 'to_location' a product_movement object """
 
@@ -147,6 +192,6 @@ def get_from_and_to_locations(product_movement):
         if product_movement.from_location is not None else None
 
     to_location = product_movement.to_location.location_id \
-        if product_movement.to_location is not None else "None"
+        if product_movement.to_location is not None else None
 
     return from_location, to_location

@@ -1,0 +1,48 @@
+{% extends "inventory_management/base_site.html" %}
+
+{% block document-title %}Dashboard{% endblock %}
+{% block page-title %}Dashboard{% endblock %}
+
+
+{% block main %}
+    <section class="main-section">
+        <section>
+            <h2 class="elements-title">Product Movements</h2>
+            <table class="my-table update_table">
+                <thead>
+                <tr>
+                    <th>Location</th>
+                    {% for product in products_list %}
+                        <th>{{ product.product_id }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for location, location_record in products_balance.items %}
+                    <tr>
+                        {% if location == "None" %}
+                            <td>SOLD</td>
+                        {% else %}
+                            <td>{{ location }}</td>
+                        {% endif %}
+                        {#                    #}
+                        {#                        {% for curr_product in products_list %}#}
+                        {#                            {% if location_record.curr_product %}#}
+                        {#                                <td>12</td>#}
+                        {#                            {% else %}#}
+                        {#                                <td>0</td>#}
+                        {#                            {% endif %}#}
+                        {#                        {% endfor %}#}
+                        {% for product, balance in location_record.items %}
+                            <td>{{ balance }}</td>
+                        {% endfor %}
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </section>
+    </section>
+
+{% endblock %}
