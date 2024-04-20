@@ -137,6 +137,7 @@ class ProductMovement(models.Model):
         # loop on all movements and add or subtract quantity when have same product_id and location_id
         for product_movement in ProductMovement.objects.all():
             current_product_id = product_movement.product_id.product_id
+
             if product_id == current_product_id and str(product_movement.movement_id) != movement_id:
                 from_location, to_location = get_from_and_to_locations(product_movement)
 
@@ -170,19 +171,13 @@ def add_product_quantity(results, product_id, location, quantity, products):
     if location is None:
         location = "Sold"
 
-    if location in results.keys():
-        if product_id in results[location].keys():
-            results[location][product_id] = results[location][product_id] + quantity
-        else:
-            results[location][product_id] = quantity
-    else:
+    if location not in results.keys():
         results.update({location: {}})
 
         for product in products:
-            if product.product_id == product_id:
-                results[location][product.product_id] = quantity
-            else:
-                results[location][product.product_id] = 0
+            results[location][product.product_id] = 0
+
+    results[location][product_id] = results[location][product_id] + quantity
 
 
 def get_from_and_to_locations(product_movement):
